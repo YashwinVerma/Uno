@@ -30,7 +30,7 @@ class Card:
     self.card_state = card_state
     self.current_draw_total = current_draw_total
   def match_cards(self, matching_object, current_player, current_color, request_color]
-    color_sesitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
+    color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
     if (self.card_type != "GENERIC_CARD"):
       if (self.card_type in color_sensitive_cards):
         if (self.card_color == current_running_color):
