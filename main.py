@@ -23,21 +23,38 @@ def input_func(choices):
     clear_screen()
 
 class Card:
-  def __init__(self, card_type, card_color, card_number, card_state):
+  def __init__(self, card_type, card_color, card_number, card_state, current_draw_total):
     self.card_type = card_type
     self.card_color = card_color
     self.card_number = card_number
     self.card_state = card_state
-  def match_cards(self, matching_object, current_color):
-    turn_manager_triggers = ["SKIP_TURN", "REVERSE_TURN", ""]
+    self.current_draw_total = current_draw_total
+  def match_cards(self, matching_object, current_player, current_color, request_color]
+    color_sesitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
     if (self.card_type != "GENERIC_CARD"):
-      turn_manager(self.card_type)
+      if (self.card_type in color_sensitive_cards):
+        if (self.card_color == current_running_color):
+          if (self.card_type == "DRAW_TWO":
+            current_player.draw_total += 2
+            return True
+          else:
+            turn_manager(self.card_type)
+            return True
+        else:
+          return False
+      else:
+        current_running_color = request_color
+        if (self.card_type == "DRAW_FOUR"):
+          currrent_player.draw_total += 4
     elif (self.card_color == current_running_color) or (self.card_number == matching_object.card_number):
+      current_running_color = self.card_color
       turn_manager("TICK_TURN")
       return True
 
 class Player:
-  def __init__(self)
+  def __init__(self, player_card_number, draw_total):
+    self.player_card_number = player_card_number
+    self.draw_number = draw_total
 
 def clear_screen():
   print("\033[2J\033[H", end='')
