@@ -3,6 +3,14 @@ import random
 import os
 import time
 
+def main():
+    main_game_loop = True
+    while True:
+        try:
+            total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
+        except ValueError:
+            print("Wrong datatype. Try again!")
+
 def input_func(choices):
     selected_index = 0  # Initialize selected_index
     while True:
