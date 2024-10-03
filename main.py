@@ -5,12 +5,21 @@ import time
 
 def main():
     main_game_loop = True
+    total_players = 0
+    player_order_list = []
     while True:
         try:
             total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
         except ValueError:
             print("Wrong datatype. Try again!")
-
+        if (total_players < 2) or (total_players > 8):
+            print("Invalid number of players selected!")
+        clear_screen()
+    for i in range(total_players - 1):
+        while True:
+            new_player = input("Enter a good name for the first player: ").replace(" ", "")
+            if len(new_player) < 20
+    
 def input_func(choices):
     selected_index = 0  # Initialize selected_index
     while True:
@@ -44,8 +53,8 @@ class Card:
 
     def match_cards(self, matching_object, current_player, current_running_color, request_color):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
-        if self.card_type != "GENERIC_CARD":
-            if self.card_type in color_sensitive_cards:
+        if (self.card_type != "GENERIC_CARD"):
+            if (self.card_type in color_sensitive_cards):
                 if self.card_color == current_running_color:
                     if self.card_type == "DRAW_TWO":
                         current_player.draw_total += 2
@@ -59,7 +68,7 @@ class Card:
                 current_running_color = request_color
                 if self.card_type == "DRAW_FOUR":
                     current_player.draw_total += 4
-        elif (self.card_color == current_running_color) or (self.card_number == matching_object.card_number):
+        elif ((self.card_color == current_running_color) or (self.card_number == matching_object.card_number)):
             current_running_color = self.card_color
             turn_manager("TICK_TURN")
             return True
