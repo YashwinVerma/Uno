@@ -7,6 +7,7 @@ def main():
     main_game_loop = True
     total_players = 0
     player_order_list = []
+    reject_flag_1 = False
     while True:
         try:
             total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
@@ -15,10 +16,21 @@ def main():
         if (total_players < 2) or (total_players > 8):
             print("Invalid number of players selected!")
         clear_screen()
-    for i in range(total_players - 1):
+    for i in range(total_players):
         while True:
-            new_player = input("Enter a good name for the first player: ").replace(" ", "")
-            if len(new_player) < 20
+            new_player = input("Enter a good name for the player: ").replace(" ", "")
+            if len(new_player) < 20 or len(new_player) > 1:
+                if new_player in player_order_list:
+                    reject_flag_1 = True
+                else:
+                    player_order_list.append(new_player)
+                    break
+            else:
+                reject_flag = True
+            if reject_flag == True:
+                print("Invalid player name! Please Try again.")
+    running_card_deck = create_deck()
+    
     
 def input_func(choices):
     selected_index = 0  # Initialize selected_index
@@ -40,16 +52,31 @@ def input_func(choices):
             time.sleep(0.5)
         clear_screen()
 
+def create_deck():
+    card_colors = ["RED", "YELLOW", "GREEN", "BLUE"]
+    card_numbers = list(range(10)) + list(range(1, 10))
+    special_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
+    wild_cards = ["WILD", "DRAW_FOUR"]
+    card_deck = []
+    for color in card_color:
+        for number in card_numbers:
+            card_deck.append(Card("GENERIC_CARD", color, number, None))
+        for special_card in special_cards:
+            card_deck.extend([Card(special_card, color, None, None)] * 2)
+    for _ in range(4):
+        for i in wild_cards:
+            card_deck.append(Card(i, None, None, None))
+    return card_deck
+
 def turn_manager(action_type):
     pass
 
 class Card:
-    def __init__(self, card_type, card_color, card_number, card_state, current_draw_total):
+    def __init__(self, card_type, card_color, card_number, card_possession):
         self.card_type = card_type
         self.card_color = card_color
         self.card_number = card_number
-        self.card_state = card_state
-        self.current_draw_total = current_draw_total
+        self.card_possession = card_possession
 
     def match_cards(self, matching_object, current_player, current_running_color, request_color):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
