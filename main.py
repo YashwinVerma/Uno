@@ -8,6 +8,9 @@ def main():
     total_players = 0
     player_order_list = []
     reject_flag_1 = False
+    reject_flag_2 = False
+    print("You can type 'exit' at eny statement to exit. Except on integer inputs!")
+    time.sleep(1)
     while True:
         try:
             total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
@@ -18,19 +21,39 @@ def main():
         clear_screen()
     for i in range(total_players):
         while True:
+            reject_flag_1 = False
             new_player = input("Enter a good name for the player: ").replace(" ", "")
+            exit_statement(new_player)
             if len(new_player) < 20 or len(new_player) > 1:
                 if new_player in player_order_list:
                     reject_flag_1 = True
                 else:
-                    player_order_list.append(new_player)
+                    player_order_list.append(Player(new_player))
                     break
             else:
                 reject_flag = True
-            if reject_flag == True:
+            if reject_flag is True:
                 print("Invalid player name! Please Try again.")
+        clear_screen()
     running_card_deck = create_deck()
-    
+    random.shuffle(running_card_deck)
+    full_card_deck = running_card_deck
+    while True:
+        reject_flag_2 = False
+        try:
+            card_number = int(input("Enter the number of cards you would like to start with for each player in integer form eg(5). Maximum 11 and minimum 4: "))
+            if card_number > 12 or card_number < 4:
+                reject_flag_2 = True
+        except ValueError:
+            reject_flag_2 = True
+        if reject_flag_2 is True:
+            print("Your input is either of the wrong datatype or is too large or small.")
+        else:
+            for i in player_order_list:
+                for _ in range(card_number):
+                    new_card_add = random.choice(running_card_deck)
+                    new_card_add.card_possession = i.player_name
+                    running_card_deck.remove(new_card_add)
     
 def input_func(choices):
     selected_index = 0  # Initialize selected_index
@@ -101,9 +124,15 @@ class Card:
             return True
 
 class Player:
-    def __init__(self, player_card_number, draw_total):
-        self.player_card_number = player_card_number
-        self.draw_total = draw_total
+    def __init__(self, player_name):
+        self.player_name = player_name
+        self.player_cards = []
+        self.player_card_number = len(self.player_cards)
+        self.draw_total = 0
 
 def clear_screen():
     os.system('cls')
+
+def exit_statement(statement_check):
+    if statement_chanck.upper().replace(" ", "") == "EXIT":
+        exit()
