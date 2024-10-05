@@ -16,7 +16,7 @@ def main():
             total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
         except ValueError:
             print("Wrong datatype. Try again!")
-        if (total_players < 2) or (total_players > 8):
+        if ((total_players < 2) or (total_players > 8)):
             print("Invalid number of players selected!")
         clear_screen()
     for i in range(total_players):
@@ -24,15 +24,15 @@ def main():
             reject_flag_1 = False
             new_player = input("Enter a good name for the player: ").replace(" ", "")
             exit_statement(new_player)
-            if len(new_player) < 20 or len(new_player) > 1:
-                if new_player in player_order_list:
+            if (len(new_player) < 20) or (len(new_player) > 1):
+                if (new_player in player_order_list):
                     reject_flag_1 = True
                 else:
                     player_order_list.append(Player(new_player))
                     break
             else:
                 reject_flag = True
-            if reject_flag is True:
+            if (reject_flag is True):
                 print("Invalid player name! Please Try again.")
         clear_screen()
     running_card_deck = create_deck()
@@ -42,7 +42,7 @@ def main():
         reject_flag_2 = False
         try:
             card_number = int(input("Enter the number of cards you would like to start with for each player in integer form eg(5). Maximum 11 and minimum 4: "))
-            if card_number > 12 or card_number < 4:
+            if (card_number > 12) or (card_number < 4):
                 reject_flag_2 = True
         except ValueError:
             reject_flag_2 = True
