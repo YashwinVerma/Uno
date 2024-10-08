@@ -66,9 +66,9 @@ def input_func(choices):
                 print(f"  {choice}")
         user_input = input("Press 'w' for Up, 's' for Down, or 'Enter' to select: ")
         if (user_input == 'w'):
-            selected_index = (selected_index - 1) % len(choices)
+            selected_index = ((selected_index - 1) % len(choices))
         elif (user_input == 's'):
-            selected_index = (selected_index + 1) % len(choices)
+            selected_index = ((selected_index + 1) % len(choices))
         elif (user_input == ''):
             return choices[selected_index]  # Return the selected choice
         else:
