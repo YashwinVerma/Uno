@@ -83,6 +83,7 @@ def create_deck():
     wild_cards = ["WILD", "DRAW_FOUR"]
     card_deck = []
     for color in card_colors:
+        # TODO
         for number in card_numbers:
             card_deck.append(Card("GENERIC_CARD", color, number, None, f"{Color.color}{color.lower().capitalize()} {number} {Color.RESET}"))
         for special_card in special_cards:
