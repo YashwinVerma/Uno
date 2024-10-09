@@ -15,7 +15,7 @@ def main():
         try:
             total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
         except ValueError:
-            print("Wrong datatype. Try again!")
+            print("Please type a number. Try again!")
         if ((total_players < 2) or (total_players > 8)):
             print("Invalid number of players selected!")
         else:
@@ -56,9 +56,10 @@ def main():
                 for _ in range(card_number):
                     i.add_card(random.choice(running_card_deck), running_deck)
 
-def input_func(choices):
+def input_func(choices, header):
     selected_index = 0  # Initialize selected_index
     while True:
+        print(header)
         for index, choice in enumerate(choices):
             if (index == selected_index):
                 print(f"> {choice} <")
@@ -82,15 +83,14 @@ def create_deck():
     special_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
     wild_cards = ["WILD", "DRAW_FOUR"]
     card_deck = []
-    for color in card_colors:
-        # TODO
+    for color in card_colors
         for number in card_numbers:
             card_deck.append(Card("GENERIC_CARD", color, number, None, f"{Color.color}{color.lower().capitalize()} {number} {Color.RESET}"))
         for special_card in special_cards:
-            card_deck.extend([Card(special_card, color, None, None, f"{Color.RED}W{Color.YELLOW}I{Color.GREEN}L{Color.BLUE}D{Color.RESET}") if special_card == "WILD" else "Draw four"] * 2)
+            card_deck.extend([Card(special_card, color, None, None, f"{Color.color}{special_card.lower().capitalize()} {number} {Color.RESET}"] * 2)
     for _ in range(4):
         for i in wild_cards:
-            card_deck.append(Card(i, None, None, None))
+            card_deck.append(Card(i, None, None, None, f"{Color.RED}W{Color.YELLOW}I{Color.GREEN}L{Color.BLUE}D{Color.RESET}") if special_card == "WILD" else "Draw four"))
     return card_deck
 
 def turn_manager(action_type):
@@ -137,7 +137,11 @@ class Player:
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
     def select_card(self, compare_card):
-        pass
+        while True:
+            print(f"{self.player_name.lower().capitalize()}'s deck: ")
+            player_cards_display = ['\t' + item for item in self.player_cards].append("    Exit game")
+            chosen_card = input_func(item, compare_card.appearance)
+            chosen_card.match(compare_card)
 
 class Color:
     RED = '\033[91m'
