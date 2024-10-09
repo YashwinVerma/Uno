@@ -136,12 +136,14 @@ class Player:
         self.player_cards.append(new_card_add)
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
-    def select_card(self, compare_card):
+    def select_card(self, compare_card, current_running_color_input):
         while True:
             print(f"{self.player_name.lower().capitalize()}'s deck: ")
             player_cards_display = ['\t' + item for item in self.player_cards].append("    Exit game")
             chosen_card = input_func(item, compare_card.appearance)
-            chosen_card.match(compare_card)
+            if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
+                pass
+            chosen_card.match_cards(compare_card, self, current_running_color_input)
 
 class Color:
     RED = '\033[91m'
