@@ -57,7 +57,7 @@ def main():
                     i.add_card(random.choice(running_card_deck), running_deck)
 
 def input_func(choices, header):
-    selected_index = 0  # Initialize selected_index
+    selected_index = 0
     while True:
         print(header)
         for index, choice in enumerate(choices):
@@ -137,13 +137,15 @@ class Player:
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
     def select_card(self, compare_card, current_running_color_input):
+        colors_request = [f"{Color.BLUE}Blue", f"{Color.RED}Red", f"{Color.GREEN}Green", f"{Color.YELLOW}Yellow"}]
         while True:
             print(f"{self.player_name.lower().capitalize()}'s deck: ")
             player_cards_display = ['\t' + item for item in self.player_cards].append("    Exit game")
             chosen_card = input_func(item, compare_card.appearance)
-            if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
-                pass
             chosen_card.match_cards(compare_card, self, current_running_color_input)
+            if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
+                current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
+            return currencurrent_running_color_input
 
 class Color:
     RED = '\033[91m'
