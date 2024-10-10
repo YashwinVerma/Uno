@@ -145,7 +145,7 @@ class Player:
             chosen_card.match_cards(compare_card, self, current_running_color_input)
             if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
                 current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
-            return currencurrent_running_color_input
+            return compare_card, current_running_color_input
 
 class Color:
     RED = '\033[91m'
