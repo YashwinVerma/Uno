@@ -3,6 +3,16 @@ import random
 import os
 import time
 
+colors = {
+    "RED" : '\033[91m',
+    "GREEN" : '\033[92m',
+    "YELLOW" : '\033[93m',
+    "BLUE" : '\033[94m',
+    "MAGENTA" : '\033[95m',
+    "CYAN" : '\033[96m',
+    "RESET" : '\033[0m'
+}
+
 def main():
     main_game_loop = True
     total_players = 0
@@ -44,6 +54,7 @@ def main():
     running_card_deck = create_deck()
     random.shuffle(running_card_deck)
     full_card_deck = running_card_deck
+    #Todo
     while True:
         clear_screen()
         reject_flag_2 = False
@@ -58,7 +69,7 @@ def main():
         else:
             for i in player_order_list:
                 for _ in range(card_number):
-                    i.add_card(random.choice(running_card_deck), running_deck)
+                    i.add_card(random.choice(running_card_deck), running_card_deck)
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
@@ -91,15 +102,19 @@ def create_deck():
     card_numbers = list(range(10)) + list(range(1, 10))
     special_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
     wild_cards = ["WILD", "DRAW_FOUR"]
+    wild_card_appearence = f"{colors["RED"]}W{colors["YELLOW"]}I{colors["GREEN"]}L{colors["BLUE"]}D{colors["RESET"]}"
     card_deck = []
-    for color in card_colors
+    for card_color in card_colors:
         for number in card_numbers:
-            card_deck.append(Card("GENERIC_CARD", color, number, None, f"{Color.color}{color.lower().capitalize()} {number} {Color.RESET}"))
+            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.lower().capitalize()} {number} {colors["RESET"]}"))
         for special_card in special_cards:
-            card_deck.extend([Card(special_card, color, None, None, f"{Color.color}{special_card.lower().capitalize()} {number} {Color.RESET}"] * 2)
-    for _ in range(4):
-        for i in wild_cards:
-            card_deck.append(Card(i, None, None, None, f"{Color.RED}W{Color.YELLOW}I{Color.GREEN}L{Color.BLUE}D{Color.RESET}") if special_card == "WILD" else "Draw four"))
+            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.lower().capitalize()} {number} {colors["RESET"]}")] * 2)
+    for i in range(4):
+        for j in wild_cards:
+            if special_card == "WILD":
+                card_deck.append(Card(j, None, None, None, wild_card_appearence))
+            else:
+                card_deck.append(Card(j, None, None, None, "Draw four"))
     return card_deck
 
 def turn_manager(action_type):
@@ -112,7 +127,6 @@ class Card:
         self.card_number = card_number
         self.card_possession = card_possession
         self.card_appearence = card_appearence
-
     def match_cards(self, matching_object, current_player, current_running_color, request_color):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
         if (self.card_type != "GENERIC_CARD"):
@@ -146,24 +160,15 @@ class Player:
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
     def select_card(self, compare_card, current_running_color_input):
-        colors_request = [f"{Color.BLUE}Blue", f"{Color.RED}Red", f"{Color.GREEN}Green", f"{Color.YELLOW}Yellow"}]
+        colors_request = [f"{colors["BLUE"]}Blue", f"{colors["RED"]}Red", f"{colors["GREEN"]}Green", f"{colors["YELLOW"]}Yellow"]
         while True:
             print(f"{self.player_name.lower().capitalize()}'s deck: ")
             player_cards_display = ['\t' + item for item in self.player_cards].append("    Exit game")
-            chosen_card = input_func(item, compare_card.appearance)
+            chosen_card = input_func(player_cards_display, compare_card.appearance)
             chosen_card.match_cards(compare_card, self, current_running_color_input)
             if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
                 current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
             return compare_card, current_running_color_input
-
-class Color:
-    RED = '\033[91m'
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    BLUE = '\033[94m'
-    MAGENTA = '\033[95m'
-    CYAN = '\033[96m'
-    RESET = '\033[0m'
 
 def clear_screen():
     os.system('cls')
@@ -171,3 +176,5 @@ def clear_screen():
 def exit_statement(statement_check):
     if (statement_check.upper().replace(" ", "") == "EXIT"):
         exit()
+
+main()
