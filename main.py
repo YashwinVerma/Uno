@@ -7,6 +7,10 @@ def main():
     main_game_loop = True
     total_players = 0
     player_order_list = []
+    current_player = None
+    current_card_compare = None
+    turn_number = 0
+    previous_cards = []
     reject_flag_1 = False
     reject_flag_2 = False
     print("You can type 'exit' at eny statement to exit. Except on integer inputs!")
@@ -55,6 +59,11 @@ def main():
             for i in player_order_list:
                 for _ in range(card_number):
                     i.add_card(random.choice(running_card_deck), running_deck)
+    print("This game of uno is about to begin.")
+    current_running_card = random.choice(running_card_deck)
+    previous_cards.append(current_running_card)
+    while main_game_loop:
+        pass
 
 def input_func(choices, header):
     selected_index = 0
