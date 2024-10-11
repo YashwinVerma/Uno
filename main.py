@@ -70,11 +70,13 @@ def main():
             for i in player_order_list:
                 for _ in range(card_number):
                     i.add_card(random.choice(running_card_deck), running_card_deck)
+            break
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
     while main_game_loop:
         pass
+
 
 def input_func(choices, header):
     selected_index = 0
@@ -117,7 +119,7 @@ def create_deck():
                 card_deck.append(Card(j, None, None, None, "Draw four"))
     return card_deck
 
-def turn_manager(action_type):
+def turn_manager(action_type, player_list):
     pass
 
 class Card:
