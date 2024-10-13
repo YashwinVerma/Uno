@@ -38,19 +38,12 @@ def main():
     for i in range(total_players):
         while True:
             reject_flag_1 = False
-            new_player = input("Enter a good name for the player: ").replace(" ", "")
-            exit_statement(new_player)
-            if ((len(new_player) < 20) or (len(new_player) > 1)):
-                if (new_player in player_order_list):
-                    reject_flag_1 = True
-                else:
-                    player_order_list.append(Player(new_player))
-                    break
+            player_name = input("Enter a good name for the player(no spaces):").replace(" ", "").upper()
+            clear_screen()
+            if ((len(player_name) < 2) or (len(player_name) > 20) or (player_name in player_order_list)):
+                print("Invalid name for player! Please try again.")
             else:
-                reject_flag = True
-            if (reject_flag is True):
-                print("Invalid player name! Please Try again.")
-        clear_screen()
+                break
     running_card_deck = create_deck()
     random.shuffle(running_card_deck)
     full_card_deck = running_card_deck
