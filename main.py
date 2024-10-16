@@ -112,8 +112,17 @@ def create_deck():
                 card_deck.append(Card(j, None, None, None, "Draw four"))
     return card_deck
 
-def turn_manager(action_type, player_list):
-    pass
+def turn_manager(action_type, player_list, current_player):
+    if action_type == "TICK_TURN":
+        player_list.remove(current_player)
+        player_list.append(current_player)
+    elif action_type == "REVERSE_TURN":
+        player_list.reverse()
+    elif action_type == "":
+        second_player = player_list[1]
+        player_list.remove(current_player, second_player)
+        player_list.append(current_player, second_player)
+
 
 class Card:
     def __init__(self, card_type, card_color, card_number, card_possession, card_appearence):
@@ -172,4 +181,4 @@ def exit_statement(statement_check):
     if (statement_check.upper().replace(" ", "") == "EXIT"):
         exit()
 
-main()
+print("HELLO".capitalize)
