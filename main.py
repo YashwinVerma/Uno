@@ -28,7 +28,7 @@ def main():
     time.sleep(1)
     while True:
         try:
-            total_players = int(input("How many player would you like to have in this game of classic uno as a number(eg. 2) maximum 8: "))
+            total_players = int(input("How many player would you like to have in this game of classic uno as a number (minimum 2 maximum 8): "))
         except ValueError:
             print("Please type a number. Try again!")
         if ((total_players < 2) or (total_players > 8)):
@@ -38,7 +38,7 @@ def main():
         clear_screen()
     for i in range(total_players):
         while True:
-            player_name = input("Enter a good name for the player(no spaces):").replace(" ", "").upper()
+            player_name = input("Enter a good name for the player(no spaces): ").replace(" ", "").upper()
             clear_screen()
             if ((len(player_name) < 2) or (len(player_name) > 20) or any(player.player_name == player_name for player in player_order_list)):
                 print("Invalid name for player! Please try again.")
@@ -150,7 +150,7 @@ class Card:
         self.card_number = card_number
         self.card_possession = card_possession
         self.card_appearence = card_appearence
-    def match_cards(self, matching_object, current_player, current_running_color, request_color):
+    def match_cards(self, matching_object, current_player, current_running_color, player_list):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
         if (self.card_type != "GENERIC_CARD"):
             if (self.card_type in color_sensitive_cards):
@@ -164,12 +164,11 @@ class Card:
                 else:
                     return False
             else:
-                current_running_color = request_color
                 if self.card_type == "DRAW_FOUR":
-                    current_player.draw_total += 4
+                    matching_object.card_possession.draw_total += 4
         elif ((self.card_color == current_running_color) or (self.card_number == matching_object.card_number)):
             current_running_color = self.card_color
-            turn_manager("TICK_TURN")
+            turn_manager("TICK_TURN", player_list, self)
             return True
         else:
             return False
@@ -192,14 +191,23 @@ class Player:
             player_cards_display = []
             for i in self.player_cards:
                 player_cards_display.append("\t" + i.card_appearence.replace("_", " "))
+            player_cards_display.append(["   Draw card", "   Exit game"])
             chosen_card = input_func(player_cards_display, compare_card.card_appearence)
-            chosen_card.match_cards(compare_card, self, current_running_color_input)
-            if chosen_card:
-                if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
-                    current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
-                return current_running_color_input, chosen_card
+            if chosen_card == "   Draw card":
+                self.draw_total += 1
+                return current_running_color_input, compare_card
             else:
-                print("Invalid card selected!")
+                for i in self.player_cards:
+                    if chosen_card.replace("\t", "") == i.card_appearence:
+                        chosen_card = i
+                        break
+                chosen_card.match_cards(compare_card, self, current_running_color_input)
+                if chosen_card:
+                    if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
+                        current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
+                    return current_running_color_input, chosen_card
+                else:
+                    print("Invalid card selected!")
 
 def clear_screen():
     os.system('cls')
