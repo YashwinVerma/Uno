@@ -23,6 +23,7 @@ def main():
     previous_cards = []
     reject_flag_1 = False
     reject_flag_2 = False
+    current_running_color = None
     print("You can type 'exit' at eny statement to exit. Except on integer inputs!")
     time.sleep(1)
     while True:
@@ -67,8 +68,15 @@ def main():
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
+    turn_1 = True
     while main_game_loop:
-        pass
+        if turn_1:
+            current_player = player_order_list[1]
+            current_card_compare = random.choice(running_card_deck)
+            running_card_deck.remove()
+            current_running_color = current_running_card.card_color
+        current_running_color, current_running_card = current_player.select_card(current_card_compare, current_running_color)
+        previous_cards.append(current_running_card)
 
 
 def input_func(choices, header):
@@ -86,7 +94,7 @@ def input_func(choices, header):
         elif (user_input == 's'):
             selected_index = ((selected_index + 1) % len(choices))
         elif (user_input == ''):
-            return choices[selected_index]  # Return the selected choice
+            return choices[selected_index]
         else:
             print("Invalid response")
             time.sleep(0.5)
@@ -101,9 +109,9 @@ def create_deck():
     card_deck = []
     for card_color in card_colors:
         for number in card_numbers:
-            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.lower().capitalize()} {number} {colors["RESET"]}"))
+            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.capitalize()} {number} {colors["RESET"]}"))
         for special_card in special_cards:
-            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.lower().capitalize()} {number} {colors["RESET"]}")] * 2)
+            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.capitalize()} {number} {colors["RESET"]}")] * 2)
     for i in range(4):
         for j in wild_cards:
             if special_card == "WILD":
@@ -118,10 +126,12 @@ def turn_manager(action_type, player_list, current_player):
         player_list.append(current_player)
     elif action_type == "REVERSE_TURN":
         player_list.reverse()
-    elif action_type == "":
+    elif action_type == "SKIP_TURN":
         second_player = player_list[1]
-        player_list.remove(current_player, second_player)
-        player_list.append(current_player, second_player)
+        player_list.remove(current_player)
+        player_list.remove(second_player)
+        player_list.append(current_player)
+        player_list.append(second_player)
 
 
 class Card:
@@ -152,6 +162,8 @@ class Card:
             current_running_color = self.card_color
             turn_manager("TICK_TURN")
             return True
+        else:
+            return False
 
 class Player:
     def __init__(self, player_name):
@@ -170,9 +182,12 @@ class Player:
             player_cards_display = ['\t' + item for item in self.player_cards].append("    Exit game")
             chosen_card = input_func(player_cards_display, compare_card.appearance)
             chosen_card.match_cards(compare_card, self, current_running_color_input)
-            if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
-                current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
-            return compare_card, current_running_color_input
+            if chosen_card:
+                if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
+                    current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
+                return current_running_color_input, chosen_card
+            else:
+                print("Invalid card selected!")
 
 def clear_screen():
     os.system('cls')
@@ -180,5 +195,4 @@ def clear_screen():
 def exit_statement(statement_check):
     if (statement_check.upper().replace(" ", "") == "EXIT"):
         exit()
-
-print("HELLO".capitalize)
+main()
