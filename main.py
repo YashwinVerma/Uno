@@ -38,17 +38,16 @@ def main():
         clear_screen()
     for i in range(total_players):
         while True:
-            reject_flag_1 = False
             player_name = input("Enter a good name for the player(no spaces):").replace(" ", "").upper()
             clear_screen()
-            if ((len(player_name) < 2) or (len(player_name) > 20) or (player_name in player_order_list)):
+            if ((len(player_name) < 2) or (len(player_name) > 20) or any(player.player_name == player_name for player in player_order_list)):
                 print("Invalid name for player! Please try again.")
             else:
+                player_order_list.append(Player(player_name))
                 break
     running_card_deck = create_deck()
     random.shuffle(running_card_deck)
     full_card_deck = running_card_deck
-    #Todo
     while True:
         clear_screen()
         reject_flag_2 = False
@@ -63,20 +62,30 @@ def main():
         else:
             for i in player_order_list:
                 for _ in range(card_number):
-                    i.add_card(random.choice(running_card_deck), running_card_deck)
+                    running_card_deck = i.add_card(random.choice(running_card_deck), running_card_deck)
             break
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
     turn_1 = True
     while main_game_loop:
+        input("Press enter to begin turn: ")
+        clear_screen()
         if turn_1:
             current_player = player_order_list[1]
             current_card_compare = random.choice(running_card_deck)
-            running_card_deck.remove()
+            running_card_deck.remove(current_card_compare)
             current_running_color = current_running_card.card_color
         current_running_color, current_running_card = current_player.select_card(current_card_compare, current_running_color)
         previous_cards.append(current_running_card)
+        print("Player card numbers: ")
+        for i in player_order_list:
+            for i in range(i.player_card_number):
+                running_card_deck = i.add_card(random.choice(running_card_deck))
+            print(f"{i.player_name.capitalize()} has {i.player_card_number} cards left.")
+        input("Press enter to finish turn: ")
+        clear_screen()
+            
 
 
 def input_func(choices, header):
@@ -175,12 +184,15 @@ class Player:
         self.player_cards.append(new_card_add)
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
+        return running_deck
     def select_card(self, compare_card, current_running_color_input):
         colors_request = [f"{colors["BLUE"]}Blue", f"{colors["RED"]}Red", f"{colors["GREEN"]}Green", f"{colors["YELLOW"]}Yellow"]
         while True:
             print(f"{self.player_name.lower().capitalize()}'s deck: ")
-            player_cards_display = ['\t' + item for item in self.player_cards].append("    Exit game")
-            chosen_card = input_func(player_cards_display, compare_card.appearance)
+            player_cards_display = []
+            for i in self.player_cards:
+                player_cards_display.append("\t" + i.card_appearence.replace("_", " "))
+            chosen_card = input_func(player_cards_display, compare_card.card_appearence)
             chosen_card.match_cards(compare_card, self, current_running_color_input)
             if chosen_card:
                 if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
