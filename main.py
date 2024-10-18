@@ -46,7 +46,8 @@ def main():
                 player_order_list.append(Player(player_name))
                 break
     running_card_deck = create_deck()
-    random.shuffle(running_card_deck)
+    for i in range(4):
+        random.shuffle(running_card_deck)
     full_card_deck = running_card_deck
     while True:
         clear_screen()
@@ -74,7 +75,7 @@ def main():
             current_card_compare = random.choice(running_card_deck)
             running_card_deck.remove(current_card_compare)
             current_running_color = current_running_card.card_color
-        current_running_color, current_running_card = current_player.select_card(current_card_compare, current_running_color)
+        current_running_color, current_running_card = current_player.select_card(current_card_compare, current_running_color, player_order_list)
         previous_cards.append(current_running_card)
         print("Player card numbers: ")
         for i in player_order_list:
@@ -106,11 +107,11 @@ def input_func(choices, header):
             print("Invalid response")
             time.sleep(0.5)
         clear_screen()
-
+#Fix this deck creating function
 def create_deck():
     card_colors = ["RED", "YELLOW", "GREEN", "BLUE"]
     card_numbers = list(range(10)) + list(range(1, 10))
-    special_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
+    special_cards = ["SKIP TURN", "REVERSE TURN", "DRAW TWO"]
     wild_cards = ["WILD", "DRAW_FOUR"]
     wild_card_appearence = f"{colors['RED']}W{colors['YELLOW']}I{colors['GREEN']}L{colors['BLUE']}D{colors['RESET']}"
     card_deck = []
@@ -182,14 +183,15 @@ class Player:
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
         return running_deck
-    def select_card(self, compare_card, current_running_color_input):
+    def select_card(self, compare_card, current_running_color_input, player_list):
         colors_request = [f"{colors['BLUE']}Blue", f"{colors['RED']}Red", f"{colors['GREEN']}Green", f"{colors['YELLOW']}Yellow"]
         while True:
             print(f"{self.player_name.lower().capitalize()}'s deck: ")
             player_cards_display = []
             for i in self.player_cards:
-                player_cards_display.append("\t" + i.card_appearence.replace("_", " "))
-            player_cards_display.append(["   Draw card", "   Exit game"])
+                player_cards_display.append("\t" + i.card_appearence)
+            player_cards_display.append("   Draw card")
+            player_cards_display.append("   Exit game")
             chosen_card = input_func(player_cards_display, compare_card.card_appearence)
             if chosen_card == "   Draw card":
                 self.draw_total += 1
@@ -199,13 +201,14 @@ class Player:
                     if chosen_card.replace("\t", "") == i.card_appearence:
                         chosen_card = i
                         break
-                chosen_card.match_cards(compare_card, self, current_running_color_input)
-                if chosen_card:
+                if chosen_card.match_cards(compare_card, self, current_running_color_input, player_list):
                     if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
                         current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
                     return current_running_color_input, chosen_card
                 else:
                     print("Invalid card selected!")
+                    input("Press enter to retry: ")
+                    clear_screen()
 
 def clear_screen():
     os.system('cls')
@@ -213,4 +216,5 @@ def clear_screen():
 def exit_statement(statement_check):
     if (statement_check.upper().replace(" ", "") == "EXIT"):
         exit()
+
 main()
