@@ -56,14 +56,12 @@ def main():
             if ((card_number > 12) or (card_number < 4)):
                 reject_flag_2 = True
         except ValueError:
-            reject_flag_2 = True
-        if (reject_flag_2 is True):
             print("Your input is either of the wrong datatype or is too large or small.")
-        else:
-            for i in player_order_list:
-                for _ in range(card_number):
-                    running_card_deck = i.add_card(random.choice(running_card_deck), running_card_deck)
-            break
+            continue
+        for i in player_order_list:
+            for _ in range(card_number):
+                running_card_deck = i.add_card(random.choice(running_card_deck), running_card_deck)
+        break
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
@@ -85,7 +83,7 @@ def main():
             print(f"{i.player_name.capitalize()} has {i.player_card_number} cards left.")
         input("Press enter to finish turn: ")
         clear_screen()
-            
+
 
 
 def input_func(choices, header):
@@ -114,16 +112,16 @@ def create_deck():
     card_numbers = list(range(10)) + list(range(1, 10))
     special_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
     wild_cards = ["WILD", "DRAW_FOUR"]
-    wild_card_appearence = f"{colors["RED"]}W{colors["YELLOW"]}I{colors["GREEN"]}L{colors["BLUE"]}D{colors["RESET"]}"
+    wild_card_appearence = f"{colors['RED']}W{colors['YELLOW']}I{colors['GREEN']}L{colors['BLUE']}D{colors['RESET']}"
     card_deck = []
     for card_color in card_colors:
         for number in card_numbers:
-            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.capitalize()} {number} {colors["RESET"]}"))
+            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.capitalize()} {number} {colors['RESET']}"))
         for special_card in special_cards:
-            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.capitalize()} {number} {colors["RESET"]}")] * 2)
+            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.capitalize()} {number} {colors['RESET']}")] * 2)
     for i in range(4):
         for j in wild_cards:
-            if special_card == "WILD":
+            if j == "WILD":
                 card_deck.append(Card(j, None, None, None, wild_card_appearence))
             else:
                 card_deck.append(Card(j, None, None, None, "Draw four"))
@@ -159,7 +157,7 @@ class Card:
                         current_player.draw_total += 2
                         return True
                     else:
-                        turn_manager(self.card_type)
+                        turn_manager(self.card_type, player_list, self)
                         return True
                 else:
                     return False
@@ -185,7 +183,7 @@ class Player:
         running_deck.remove(new_card_add)
         return running_deck
     def select_card(self, compare_card, current_running_color_input):
-        colors_request = [f"{colors["BLUE"]}Blue", f"{colors["RED"]}Red", f"{colors["GREEN"]}Green", f"{colors["YELLOW"]}Yellow"]
+        colors_request = [f"{colors['BLUE']}Blue", f"{colors['RED']}Red", f"{colors['GREEN']}Green", f"{colors['YELLOW']}Yellow"]
         while True:
             print(f"{self.player_name.lower().capitalize()}'s deck: ")
             player_cards_display = []
