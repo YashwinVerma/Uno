@@ -117,9 +117,9 @@ def create_deck():
     card_deck = []
     for card_color in card_colors:
         for number in card_numbers:
-            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.capitalize()} {number} {colors['RESET']}"))
+            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.capitalize()} {number}{colors['RESET']}"))
         for special_card in special_cards:
-            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.capitalize()} {number} {colors['RESET']}")] * 2)
+            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.capitalize()}{colors['RESET']}")] * 2)
     for i in range(4):
         for j in wild_cards:
             if j == "WILD":
