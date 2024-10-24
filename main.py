@@ -27,6 +27,7 @@ def main():
     print("You can type 'exit' at eny statement to exit. Except on integer inputs!")
     time.sleep(1)
     while True:
+        clear_screen()
         try:
             total_players = int(input("How many player would you like to have in this game of classic uno as a number (minimum 2 maximum 8): "))
         except ValueError:
@@ -153,29 +154,30 @@ class Card:
     def match_cards(self, matching_object, current_player, current_running_color, player_list):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
         
-        # Handle Wild and Draw Four cards, which don't depend on the current running color
-        if self.card_type == "WILD" or self.card_type == "DRAW_FOUR":
+        if self.card_type == "WILD" or self.card_type == "DRAW_FOUR":#in WILD_CARDS
             if self.card_type == "DRAW_FOUR":
                 matching_object.draw_total += 4
-            return True  # Wild or Draw Four card matches regardless
-
-        # Handle color-sensitive special cards like Skip, Reverse, and Draw Two
+            return True
+            #ADD ability to use wildcard
+            
+        #add case for the reverse card
+        
         if self.card_type in color_sensitive_cards:
             if self.card_color == current_running_color:
                 if self.card_type == "DRAW_TWO":
                     matching_object.draw_total += 2
                 else:
                     turn_manager(self.card_type, player_list, current_player)
-                return True  # Valid match for color-sensitive cards
-            return False  # Color doesn't match
-
-        # Handle generic cards (i.e., regular number cards)
+                return True
+            return False
+        
+        #when its a number card, and the number/colour match
         if self.card_type == "GENERIC_CARD" and (self.card_color == current_running_color or self.card_number == matching_object.card_number):
-            current_running_color = self.card_color  # Update running color
+            current_running_color = self.card_color
             turn_manager("TICK_TURN", player_list, current_player)
-            return True  # Valid match for number or color
+            return True
         else:
-            return False  # No match
+            return False
 
 class Player:
     def __init__(self, player_name):
