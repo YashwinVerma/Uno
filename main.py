@@ -108,25 +108,23 @@ def input_func(choices, header):
             print("Invalid response")
             time.sleep(0.5)
         clear_screen()
-#Fix this deck creating function
 def create_deck():
     card_colors = ["RED", "YELLOW", "GREEN", "BLUE"]
     card_numbers = list(range(10)) + list(range(1, 10))
     special_cards = ["SKIP TURN", "REVERSE TURN", "DRAW TWO"]
-    wild_cards = ["WILD", "DRAW_FOUR"]
-    wild_card_appearence = f"{colors['RED']}W{colors['YELLOW']}I{colors['GREEN']}L{colors['BLUE']}D{colors['RESET']}"
+    wild_card_appearance = f"{colors['RED']}W{colors['YELLOW']}I{colors['GREEN']}L{colors['BLUE']}D{colors['RESET']}"
+    draw_four_appearance = f"{colors['RED']}D{colors['YELLOW']}R{colors['GREEN']}A{colors['BLUE']}W FOUR{colors['RESET']}"
     card_deck = []
     for card_color in card_colors:
         for number in card_numbers:
-            card_deck.append(Card("GENERIC_CARD", card_color, number, None, f"{colors[card_color]}{card_color.capitalize()} {number}{colors['RESET']}"))
+            display_text = f"{colors[card_color]}{card_color.capitalize()} {number}{colors['RESET']}"
+            card_deck.append(Card("GENERIC_CARD", card_color, number, None, display_text))
         for special_card in special_cards:
-            card_deck.extend([Card(special_card, card_color, None, None, f"{colors[card_color]}{special_card.capitalize()}{colors['RESET']}")] * 2)
-    for i in range(4):
-        for j in wild_cards:
-            if j == "WILD":
-                card_deck.append(Card(j, None, None, None, wild_card_appearence))
-            else:
-                card_deck.append(Card(j, None, None, None, "Draw four"))
+            display_text = f"{colors[card_color]}{special_card.capitalize()}{colors['RESET']}"
+            card_deck.extend([Card(special_card, card_color, None, None, display_text)] * 2)
+    for _ in range(4):
+        card_deck.append(Card("WILD", None, None, None, wild_card_appearance))
+        card_deck.append(Card("DRAW FOUR", None, None, None, draw_four_appearance))
     return card_deck
 
 def turn_manager(action_type, player_list, current_player):
@@ -153,31 +151,25 @@ class Card:
 
     def match_cards(self, matching_object, current_player, current_running_color, player_list):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
-        
-        if self.card_type == "WILD" or self.card_type == "DRAW_FOUR":#in WILD_CARDS
-            if self.card_type == "DRAW_FOUR":
+        card_type = matching_object.card_type
+        match card_type:
+            case "DRAW_FOUR":
                 matching_object.draw_total += 4
-            return True
-            #ADD ability to use wildcard
-            
-        #add case for the reverse card
-        
-        if self.card_type in color_sensitive_cards:
-            if self.card_color == current_running_color:
-                if self.card_type == "DRAW_TWO":
-                    matching_object.draw_total += 2
-                else:
-                    turn_manager(self.card_type, player_list, current_player)
                 return True
-            return False
-        
-        #when its a number card, and the number/colour match
-        if self.card_type == "GENERIC_CARD" and (self.card_color == current_running_color or self.card_number == matching_object.card_number):
-            current_running_color = self.card_color
-            turn_manager("TICK_TURN", player_list, current_player)
+            case "WILD":
+                return True
+        if (self.card_type in color_sensitive_cards and self.card_color == current_running_color):
+            if (self.card_type == "DRAW_TWO"):
+                matching_object.draw_total += 2
+            else:
+                turn_manager(self.card_type, player_list, current_player)
             return True
-        else:
-            return False
+        if self.card_type == "GENERIC_CARD":
+            if self.card_color == current_running_color or self.card_number == matching_object.card_number:
+                current_running_color = self.card_color
+                turn_manager("TICK_TURN", player_list, current_player)
+                return True
+        return False
 
 class Player:
     def __init__(self, player_name):
@@ -193,32 +185,10 @@ class Player:
     def select_card(self, compare_card, current_running_color_input, player_list):
         colors_request = [f"{colors['BLUE']}Blue", f"{colors['RED']}Red", f"{colors['GREEN']}Green", f"{colors['YELLOW']}Yellow"]
         while True:
-            print(f"{self.player_name.lower().capitalize()}'s deck: ")
-            player_cards_display = []
-            for i in self.player_cards:
-                player_cards_display.append("\t" + i.card_appearence)
-            player_cards_display.append("   Draw card")
-            player_cards_display.append("   Exit game")
-            chosen_card = input_func(player_cards_display, compare_card.card_appearence)
-            if chosen_card == "   Draw card":
-                self.draw_total += 1
-                return current_running_color_input, compare_card
-            else:
-                for i in self.player_cards:
-                    if chosen_card.replace("\t", "") == i.card_appearence:
-                        chosen_card = i
-                        break
-                if chosen_card.match_cards(compare_card, self, current_running_color_input, player_list):
-                    if chosen_card.card_type in ["WILD", "DRAW_FOUR"]:
-                        current_running_color_input = input_func(colors_request, "Choose what color to change to: ")
-                    return current_running_color_input, chosen_card
-                else:
-                    print("Invalid card selected!")
-                    input("Press enter to retry: ")
-                    clear_screen()
+            cards_display = [x.card_appearence for x in self.player_cards]
 
 def clear_screen():
-    os.system('cls')
+    print("\033c")
 
 def exit_statement(statement_check):
     if (statement_check.upper().replace(" ", "") == "EXIT"):
