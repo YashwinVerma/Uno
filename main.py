@@ -3,6 +3,9 @@ import random
 import os
 import time
 
+#TODO : .
+#Fix first card = color changing card issue.
+#Finish select_card() function.
 colors = {
     "RED" : '\033[91m',
     "GREEN" : '\033[92m',
@@ -67,15 +70,15 @@ def main():
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
-    turn_1 = True
+    while True:
+        current_player = player_order_list[1]
+        current_card_compare = random.choice(running_card_deck)
+        if current_card_compare.card_type
+        running_card_deck.remove(current_card_compare)
+        current_running_color = current_running_card.card_color
     while main_game_loop:
         input("Press enter to begin turn: ")
         clear_screen()
-        if turn_1:
-            current_player = player_order_list[1]
-            current_card_compare = random.choice(running_card_deck)
-            running_card_deck.remove(current_card_compare)
-            current_running_color = current_running_card.card_color
         current_running_color, current_running_card = current_player.select_card(current_card_compare, current_running_color, player_order_list)
         previous_cards.append(current_running_card)
         print("Player card numbers: ")
@@ -85,8 +88,6 @@ def main():
             print(f"{i.player_name.capitalize()} has {i.player_card_number} cards left.")
         input("Press enter to finish turn: ")
         clear_screen()
-
-
 
 def input_func(choices, header):
     selected_index = 0
@@ -108,6 +109,7 @@ def input_func(choices, header):
             print("Invalid response")
             time.sleep(0.5)
         clear_screen()
+
 def create_deck():
     card_colors = ["RED", "YELLOW", "GREEN", "BLUE"]
     card_numbers = list(range(10)) + list(range(1, 10))
@@ -185,8 +187,10 @@ class Player:
     def select_card(self, compare_card, current_running_color_input, player_list):
         colors_request = [f"{colors['BLUE']}Blue", f"{colors['RED']}Red", f"{colors['GREEN']}Green", f"{colors['YELLOW']}Yellow"]
         while True:
-            cards_display = [x.card_appearence for x in self.player_cards]
-
+            display_header = compare_card.card_appearence + "\nThe current color is: " + current_running_color_input.capitalize()
+            cards_display = ["\t" + x.card_appearence for x in self.player_cards]
+            input_func(cards_display, display_header)
+               
 def clear_screen():
     print("\033c")
 
