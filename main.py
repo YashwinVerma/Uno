@@ -4,6 +4,7 @@ import os
 import time
 
 #TODO : .
+#Condense card_color into card_type in the card class.
 #Fix first card = color changing card issue.
 #Finish select_card() function.
 colors = {
@@ -111,6 +112,7 @@ def input_func(choices, header):
         clear_screen()
 
 def create_deck():
+    global special_cards
     card_colors = ["RED", "YELLOW", "GREEN", "BLUE"]
     card_numbers = list(range(10)) + list(range(1, 10))
     special_cards = ["SKIP TURN", "REVERSE TURN", "DRAW TWO"]
@@ -144,11 +146,15 @@ def turn_manager(action_type, player_list, current_player):
 
 class Card:
     def __init__(self, card_type, card_color, card_number, card_possession, card_appearence):
-        self.card_type = card_type
         self.card_color = card_color
         self.card_number = card_number
         self.card_possession = card_possession
-        self.card_appearence = card_appearence
+
+    def calculate_card_appearence(self):
+        if self.card_type == "GENERIC+CARD":
+            return f"{colors[self.card_color]}{self.card_color.capitalize()} {self.card_number}"
+        if self.card_type in special_cards:
+            return f"{colors[self.card_color]}{self.card_type} self.
 
     def match_cards(self, matching_object, current_player, current_running_color, player_list):
         color_sensitive_cards = ["SKIP_TURN", "REVERSE_TURN", "DRAW_TWO"]
@@ -175,15 +181,17 @@ class Player:
         self.player_cards = []
         self.player_card_number = len(self.player_cards)
         self.draw_total = 0
+
     def add_card(self, new_card_add, running_deck):
         self.player_cards.append(new_card_add)
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
         return running_deck
-        
+
     def select_card(self, compare_card, current_running_color_input, player_list):
         colors_request = [f"{colors['BLUE']}/tBlue", f"{colors['RED']}/tRed", f"{colors['GREEN']}/tGreen", f"{colors['YELLOW']}/tYellow"]
         color_change_activators = ["WILD", "DRAW_FOUR"]
+        for i in
         display_header = compare_card.card_appearence + "\nThe current color is: " + current_running_color_input.capitalize()
         player_cards_dict = {}
         for i in player_cards:
