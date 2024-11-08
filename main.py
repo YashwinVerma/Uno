@@ -24,6 +24,8 @@ class CardTypeLists:
     all_card_types = ["SKIP TURN", "REVERSE TURN", "DRAW TWO", "DRAW_FOUR", "WILD", "RED", "GREEN", "YELLOW", "BLUE"]
 
 def main():
+    global player_order_list
+    global running_card_deck
     main_game_loop = True
     total_players = 0
     player_order_list = []
@@ -126,13 +128,13 @@ def create_deck():
     for card_color in card_colors:
         for number in card_numbers:
             display_text = f"{colors[card_color]}{card_color.capitalize()} {number}{colors['RESET']}"
-            card_deck.append(Card(card_color, number, None))
+            card_deck.append(Card(card_color, number))
         for special_card in special_cards:
             display_text = f"{colors[card_color]}{special_card.capitalize()}{colors['RESET']}"
-            card_deck.extend([Card(special_card, card_color, None, None, display_text)] * 2)
+            card_deck.extend([Card(special_card, None)] * 2)
     for _ in range(4):
-        card_deck.append(Card("WILD", None, None, None, wild_card_appearance))
-        card_deck.append(Card("DRAW FOUR", None, None, None, draw_four_appearance))
+        card_deck.append(Card("WILD", None))
+        card_deck.append(Card("DRAW FOUR", None))
     return card_deck
 
 def turn_manager(action_type, player_list, current_player):
@@ -149,10 +151,9 @@ def turn_manager(action_type, player_list, current_player):
         player_list.append(second_player)
 
 class Card:
-    def __init__(self, card_color, card_number, card_possession):
+    def __init__(self, card_color, card_number = None):
         self.card_color = card_color
-        self.card_number = card_number
-        self.card_possession = card_possession
+        self.card_number = card_number if 
 
     def calculate_card_appearence(self):
         if self.card_color in CardTypeLists.card_colors:
@@ -168,13 +169,13 @@ class Player:
         self.player_card_number = len(self.player_cards)
         self.draw_total = 0
 
-    def add_card(self, new_card_add, running_deck):
+    def add_card(self, new_card_add):
         self.player_cards.append(new_card_add)
         new_card_add.card_possession = self.player_name
         running_deck.remove(new_card_add)
         return running_deck
 
-    def select_card(self, compare_card, current_running_color_input, player_list):
+    def select_card(self, compare_card):
         colors_request = [f"{colors['BLUE']}/tBlue", f"{colors['RED']}/tRed", f"{colors['GREEN']}/tGreen", f"{colors['YELLOW']}/tYellow"]
         display_header = compare_card.calculate_card_appearence() + "\nThe current color is: " + current_running_color_input.capitalize()
         player_cards_dict = {}
