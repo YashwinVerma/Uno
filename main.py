@@ -7,6 +7,8 @@ import time
 #Condense card_color into card_type in the card class.
 #Fix first card = color changing card issue.
 #Finish select_card() function.
+#I MESSED UP A LOT WITH THE CARD CLASS.
+
 colors = {
     "RED" : '\033[91m',
     "GREEN" : '\033[92m',
@@ -37,7 +39,7 @@ def main():
     reject_flag_1 = False
     reject_flag_2 = False
     current_running_color = None
-    special_card_appearence_dict = {"SKIP_TURN", f"{self.card_color = }"}
+    special_card_appearence_dict = {"SKIP_TURN", f"{self.card_color}"}
     print("You can type 'exit' at eny statement to exit. Except on integer inputs!")
     time.sleep(1)
     while True:
@@ -144,9 +146,9 @@ def turn_manager(action_type, player_list, current_player):
         player_list.append(second_player)
 
 class Card:
-    def __init__(self, card_color, card_number=None):
+    def __init__(self, card_color, card_number):
         self.card_color = card_color
-        self.card_number = 10 if card_number is None else card_number
+        self.card_number = card_number
 
     def calculate_card_appearence(self) -> str:
         if self.card_number != 10:
