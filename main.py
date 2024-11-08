@@ -26,6 +26,7 @@ class CardTypeLists:
 def main():
     global player_order_list
     global running_card_deck
+    global special_card_appearence_dict
     main_game_loop = True
     total_players = 0
     player_order_list = []
@@ -36,6 +37,7 @@ def main():
     reject_flag_1 = False
     reject_flag_2 = False
     current_running_color = None
+    special_card_appearence_dict = {"SKIP_TURN", f"{self.card_color = }"}
     print("You can type 'exit' at eny statement to exit. Except on integer inputs!")
     time.sleep(1)
     while True:
@@ -74,21 +76,15 @@ def main():
             continue
         for i in player_order_list:
             for _ in range(card_number):
-                running_card_deck = i.add_card(random.choice(running_card_deck), running_card_deck)
+                running_card_deck = i.add_card(random.choice(running_card_deck))
         break
     print("This game of uno is about to begin.")
     current_running_card = random.choice(running_card_deck)
     previous_cards.append(current_running_card)
-    while True:
-        current_player = player_order_list[1]
-        current_card_compare = random.choice(running_card_deck)
-        if current_card_compare.card_type
-        running_card_deck.remove(current_card_compare)
-        current_running_color = current_running_card.card_color
     while main_game_loop:
         input("Press enter to begin turn: ")
         clear_screen()
-        current_running_color, current_running_card = current_player.select_card(current_card_compare, current_running_color, player_order_list)
+        current_running_card = current_player.select_card(current_card_compare)
         previous_cards.append(current_running_card)
         print("Player card numbers: ")
         for i in player_order_list:
@@ -120,17 +116,14 @@ def input_func(choices, header):
         clear_screen()
 
 def create_deck():
-    global special_cards
     card_numbers = list(range(10)) + list(range(1, 10))
     wild_card_appearance = f"{colors['RED']}W{colors['YELLOW']}I{colors['GREEN']}L{colors['BLUE']}D{colors['RESET']}"
     draw_four_appearance = f"{colors['RED']}D{colors['YELLOW']}R{colors['GREEN']}A{colors['BLUE']}W FOUR{colors['RESET']}"
     card_deck = []
-    for card_color in card_colors:
+    for card_color in CardTypeLists.card_colors:
         for number in card_numbers:
-            display_text = f"{colors[card_color]}{card_color.capitalize()} {number}{colors['RESET']}"
             card_deck.append(Card(card_color, number))
-        for special_card in special_cards:
-            display_text = f"{colors[card_color]}{special_card.capitalize()}{colors['RESET']}"
+        for special_card in CardTypeLists.special_color_cards:
             card_deck.extend([Card(special_card, None)] * 2)
     for _ in range(4):
         card_deck.append(Card("WILD", None))
@@ -151,16 +144,23 @@ def turn_manager(action_type, player_list, current_player):
         player_list.append(second_player)
 
 class Card:
-    def __init__(self, card_color, card_number = None):
+    def __init__(self, card_color, card_number=None):
         self.card_color = card_color
-        self.card_number = card_number if 
+        self.card_number = 10 if card_number is None else card_number
 
-    def calculate_card_appearence(self):
-        if self.card_color in CardTypeLists.card_colors:
+    def calculate_card_appearence(self) -> str:
+        if self.card_number != 10:
             return f"{colors[self.card_color]}{self.card_color.capitalize()} {self.card_number}"
+        else:
+            asdf
 
-    def match_cards(self, matching_object, current_player, current_running_color, player_list):
-        pass
+    def match_cards(self, matching_object) -> bool:
+        if ((self.card_number != 10) or (self.card_color in CardTypeLists.special_color_cards)):
+            if ((self.card_color == matching_object.card_color) or (self.card_color == matching_object.card_color)):
+                return True
+        else:
+            pass
+
 
 class Player:
     def __init__(self, player_name):
@@ -169,13 +169,12 @@ class Player:
         self.player_card_number = len(self.player_cards)
         self.draw_total = 0
 
-    def add_card(self, new_card_add):
+    def add_card(self, new_card_add) -> list:
         self.player_cards.append(new_card_add)
-        new_card_add.card_possession = self.player_name
-        running_deck.remove(new_card_add)
-        return running_deck
+        running_card_deck.remove(new_card_add)
+        return running_card_deck
 
-    def select_card(self, compare_card):
+    def select_card(self, compare_card) -> None:
         colors_request = [f"{colors['BLUE']}/tBlue", f"{colors['RED']}/tRed", f"{colors['GREEN']}/tGreen", f"{colors['YELLOW']}/tYellow"]
         display_header = compare_card.calculate_card_appearence() + "\nThe current color is: " + current_running_color_input.capitalize()
         player_cards_dict = {}
@@ -187,7 +186,7 @@ class Player:
             exit_statement(selected_card_appearence)
             selected_card = next((k for k, v in player_cards_dicts.items() if v == selected_card_appearence), None)
             if selected_card.card_type in CardTypeLists.special_color_change_cards:
-                current_running_color_input = input_func("Please choose the color that you want to change to as you have chosen a card that allows you do such: ", colors_request
+                current_running_color_input = input_func("Please choose the color that you want to change to as you have chosen a card that allows you do such: ", colors_request)
                
 def clear_screen():
     print("\033c")
